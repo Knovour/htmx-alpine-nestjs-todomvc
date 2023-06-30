@@ -1,0 +1,10 @@
+{% extends "./layout.njk" %}
+
+{% block main %}
+	<form name="init" hx-post="/clickup" hx-target="[name=clickup]" hx-swap="outerHTML">
+		<label>Token</label>
+		<input type="text" name="token">
+		<button type="submit">送出</button>
+	</form>
+	<form name="clickup" hidden></form>
+{% endblock %}

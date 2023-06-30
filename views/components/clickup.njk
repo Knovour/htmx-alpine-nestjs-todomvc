@@ -1,0 +1,39 @@
+<form name="clickup">
+	<div class="grid">
+		<fieldset>
+			<label>Team/Workspace</label>
+			<select name="team" hx-get="/clickup/space" hx-trigger="change" hx-swap="multi:#space,#taskTmpl">
+				{% set opts = teams %}
+				{% include "./options.njk" %}
+			</select>
+		</fieldset>
+		<fieldset>
+			<label>Space</label>
+			<select id="space" name="space" hx-get="/clickup/folder" hx-trigger="htmx:afterSwap, change" hx-target="[name=folder]">
+				{% set opts = spaces %}
+				{% include "./options.njk" %}
+			</select>
+		</fieldset>
+		<fieldset>
+			<label>Folder</label>
+			<select name="folder" hx-get="/clickup/list" hx-trigger="htmx:afterSwap, change" hx-target="[name=list]">
+				{% set opts = folders %}
+				{% include "./options.njk" %}
+			</select>
+		</fieldset>
+		<fieldset>
+			<label>List</label>
+			<select name="list">
+				{% set opts = lists %}
+				{% include "./options.njk" %}
+			</select>
+		</fieldset>
+	</div>
+	<fieldset>
+		<label>Task Template</label>
+		<select id="taskTmpl" name="taskTmpl">
+			{% set opts = tmpls %}
+			{% include "./options.njk" %}
+		</select>
+	</fieldset>
+</form>
