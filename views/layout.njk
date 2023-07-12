@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>TodoMVC</title>
+		<link rel="stylesheet" href="/public/todo.css">
 		<script defer src="https://unpkg.com/htmx.org"></script>
-		<script defer src="https://unpkg.com/htmx.org/dist/ext/multi-swap.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 	</head>
 	<body>
-		<main class="container" hx-ext="multi-swap">
-			{% block main %}
-			{% endblock %}
-		</main>
+		{% block main %}
+		{% endblock %}
+		<footer class="info">
+			<p>Double-click to edit a todo</p>
+			<!-- Remove the below line ↓ -->
+			<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+			<!-- Change this out with your name and url ↓ -->
+			<p>Created by <a href="http://todomvc.com">you</a></p>
+			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+		</footer>
 	</body>
 </html>

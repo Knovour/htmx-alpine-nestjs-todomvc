@@ -1,10 +1,82 @@
 {% extends "./layout.njk" %}
 
 {% block main %}
-	<form name="init" hx-post="/clickup" hx-target="[name=clickup]" hx-swap="outerHTML">
-		<label>Token</label>
-		<input type="text" name="token">
-		<button type="submit">送出</button>
-	</form>
-	<form name="clickup" hidden></form>
+	<section class="todoapp" x-data="{
+		tasks: [],
+		completed: [],
+		show: 'all',
+		editing: '',
+		filter(id) {
+			const isCompleted = this.completed.includes(id)
+			return this.show === 'all' || (this.show === 'active' && !isCompleted) || (this.show === 'completed' && isCompleted)
+		},
+		delTask(id) {
+			this.tasks = this.tasks.filter(taskId => taskId !== id)
+			this.completed = this.completed.filter(taskId => taskId !== id)
+		},
+		delCompleted() {
+			this.tasks = this.tasks.filter(taskId => !this.completed.includes(taskId))
+			this.completed = []
+		}
+	}">
+		<input type="hidden" x-model="completed" name="completedId" />
+		<header class="header">
+			<h1>todos</h1>
+			<input
+				class="new-todo"
+				placeholder="What needs to be done?"
+				name="name"
+				autofocus
+				hx-post="/todo/create"
+				hx-target=".todo-list"
+				hx-swap="afterbegin"
+				@htmx:after-request="$event.target.value = ''"
+			>
+		</header>
+		<!-- This section should be hidden by default and shown when there are todos -->
+		<section class="main">
+			<input
+				id="toggle-all"
+				class="toggle-all"
+				type="checkbox"
+				hx-put="/todo/toggle"
+				hx-trigger="change delay:200ms"
+				hx-include="[name='completedId']"
+				@change="completed = completed.length !== tasks.length ? tasks : []"
+			>
+			<label for="toggle-all">Mark all as complete</label>
+			<ul class="todo-list"></ul>
+		</section>
+		<!-- This footer should be hidden by default and shown when there are todos -->
+		<footer class="footer" hidden x-effect="$el.hidden = !tasks.length">
+			<!-- This should be `0 items left` by default -->
+			<span class="todo-count">
+				<strong x-text="tasks.length - completed.length"></strong>
+				item left
+			</span>
+			<!-- Remove this if you don't implement routing -->
+			<ul class="filters">
+				<li>
+					<a :class="show === 'all' && 'selected'" href="#" @click="show = 'all'">All</a>
+				</li>
+				<li>
+					<a :class="show === 'active' && 'selected'" href="#active" @click="show = 'active'">Active</a>
+				</li>
+				<li>
+					<a :class="show === 'completed' && 'selected'" href="#completed" @click="show = 'completed'">Completed</a>
+				</li>
+			</ul>
+			<!-- Hidden if no completed items are left ↓ -->
+			<button
+				class="clear-completed"
+				x-show="completed.length"
+				hx-delete="/todo/del"
+				hx-include="[name='completedId']"
+				hx-swap="none"
+				@htmx:after-request="delCompleted"
+			>
+				Clear completed
+			</button>
+		</footer>
+	</section>
 {% endblock %}

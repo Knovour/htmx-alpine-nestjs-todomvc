@@ -1,0 +1,35 @@
+<li
+	:class="{
+		completed: completed.includes('{{ id }}'),
+		editing: editing === '{{ id }}'
+	}"
+	x-init="tasks.push('{{ id }}')"
+	x-effect="!tasks.includes('{{ id }}') && $el.remove()"
+	x-show="filter('{{ id }}')"
+>
+	<div class="view">
+		<input
+			class="toggle"
+			type="checkbox"
+			value="{{ id }}"
+			name="completed"
+			x-model="completed"
+			hx-patch="/todo/{{ id }}/toggle"
+		>
+		<label @dblclick="editing = '{{ id }}'">{{ name }}</label>
+		<button
+			class="destroy"
+			hx-delete="/todo/{{ id }}/del"
+			@htmx:after-request="delTask('{{ id }}')"
+		></button>
+	</div>
+	<input
+		class="edit"
+		value="{{ name }}"
+		@keyup.enter="editing = ''"
+		@keyup.esc="editing = ''"
+		name="newName"
+		hx-patch="/todo/{{ id }}/update"
+		hx-target="previous .view label"
+	>
+</li>
